@@ -6,7 +6,7 @@
       <hr />
       <br />
 
-      <vue-form :state="formState" @submit.prevent="enviar()">
+      <vue-form :state="formState" @submit.prevent="postUsuario()">
         <validate tag="div">
           <label for="nombre">Nombre</label>
           <input
@@ -30,8 +30,6 @@
             </div>
           </field-messages>
         </validate>
-
-        
 
         <validate tag="div">
           <label for="edad">Edad</label>
@@ -61,23 +59,24 @@
         </validate>
 
         <validate tag="div">
-         
           <label for="email">Mail</label>
-          <input 
+          <input
             type="email"
             id="email"
-            name="email" 
+            name="email"
             class="form-control"
             autocomplete="off"
-            v-model.trim="formData.email" 
-            required 
+            v-model.trim="formData.email"
+            required
           />
 
-          
           <field-messages name="email" show="$dirty">
-            
-            <div slot="required" class="alert alert-danger mt-1">Campo Obligatorio</div>
-            <div slot="email" class="alert alert-danger mt-1">Email Invalido</div>
+            <div slot="required" class="alert alert-danger mt-1">
+              Campo Obligatorio
+            </div>
+            <div slot="email" class="alert alert-danger mt-1">
+              Email Invalido
+            </div>
           </field-messages>
         </validate>
 
@@ -91,7 +90,6 @@
       <pre>{{ formData }}</pre>
 
       <hr />
-      
     </div>
   </section>
 </template>
@@ -108,6 +106,8 @@ export default {
       nombreMinLength: 5,
       edadMin: 18,
       edadMax: 120,
+      url: "https://628d182d3df57e983edbd628.mockapi.io/PostUsuario",
+      posts: [],
     };
   },
   methods: {
@@ -118,11 +118,14 @@ export default {
         email: "",
       };
     },
-    enviar() {
-      console.log({ ...this.formData });
-
-      this.formData = this.getInicialData();
-      this.formState._reset();
+    async postUsuario() {
+      let usuarioNew = this.formData;
+      try {
+        let { data: usuario } = await this.axios.post(this.url, usuarioNew);
+        console.log("AXIOS POST usuario", usuario);
+      } catch (error) {
+        console.error("Error en postUsuario()", error.message);
+      }
     },
   },
   computed: {},
@@ -130,8 +133,7 @@ export default {
 </script>
 
 <style scoped lang="css">
-
-h1{
-  color:coral;
+h1 {
+  color: coral;
 }
 </style>

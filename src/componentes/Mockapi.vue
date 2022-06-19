@@ -6,15 +6,8 @@
       <hr />
       <br />
 
-      
-      <button class="btn btn-success my-3 mr-3" @click="getPostsXHRpromise()">
-        Pedir XHR
-      </button>
-      <button class="btn btn-success my-3 mr-3" @click="getPostsFetch()">
-        Pedir Fetch
-      </button>
       <button class="btn btn-success my-3 mr-3" @click="getPostsAxios()">
-        Pedir Axios
+        Post Axios
       </button>
       <button class="btn btn-danger my-3" @click="posts = []">CLEAR</button>
       <br />
@@ -24,12 +17,12 @@
           <tr>
             <th>Nombre</th>
             <th>Email</th>
-            <th>Numero</th>
+            <th>Edad</th>
           </tr>
           <tr v-for="(post, index) in posts" :key="index">
             <td>{{ post.nombre }}</td>
             <td>{{ post.email }}</td>
-            <td>{{ post.numero }}</td>
+            <td>{{ post.edad }}</td>
           </tr>
         </table>
         <h5 class="alert alert-primary">
@@ -50,66 +43,11 @@ export default {
   mounted() {},
   data() {
     return {
-      url: "https://628d182d3df57e983edbd628.mockapi.io/usuarios",
+      url: "https://628d182d3df57e983edbd628.mockapi.io/PostUsuario",
       posts: [],
     };
   },
   methods: {
-    wrapperXHRpromise() {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("get", this.url);
-
-        xhr.addEventListener("load", () => {
-          if (xhr.status == 200) {
-            let respuesta = JSON.parse(xhr.response);
-
-            resolve(respuesta);
-          } else {
-            console.error("ERROR XHR cb (status)", xhr.status);
-            let error = {
-              title: "ERROR XHR cb (status)",
-              status: xhr.status,
-            };
-            reject(error);
-          }
-        });
-
-        xhr.addEventListener("error", (e) => {
-          console.error("ERROR XHR cb (ajax)", e);
-          let error = {
-            title: "ERROR XHR cb (ajax)",
-            info: e,
-          };
-          reject(error);
-        });
-
-        xhr.send();
-      });
-    },
-
-    
-    async getPostsXHRpromise() {
-      try {
-        let respuesta = await this.wrapperXHRpromise();
-
-        this.posts = respuesta;
-      } catch (error) {
-        console.error("Error XHRpromise", error);
-      }
-    },
-
-    async getPostsFetch() {
-      try {
-        let response = await fetch(this.url);
-        //console.log(response)
-        let respuesta = await response.json();
-        this.posts = respuesta;
-      } catch (error) {
-        console.error("Error Fetch", error);
-      }
-    },
-
     async getPostsAxios() {
       try {
         let { data } = await this.axios(this.url);
